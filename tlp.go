@@ -1,12 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os/user"
 
 	"github.com/howeyc/fsnotify"
 )
 
 func main() {
+
+	usr, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
@@ -26,7 +33,8 @@ func main() {
 		}
 	}()
 
-	err = watcher.Watch("/Users/jfray/.bash_history")
+	histFile := fmt.Sprintf("%s/.bash_history", usr.HomeDir)
+	err = watcher.Watch(histFile)
 	if err != nil {
 		log.Fatal(err)
 	}
